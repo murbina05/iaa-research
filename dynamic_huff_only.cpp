@@ -5,16 +5,24 @@
  ******************************************************************************/
 
 //* [QPL_LOW_LEVEL_CANNED_MODE_EXAMPLE] */
-
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-#include <memory>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
 #include <vector>
+#include <iostream>
+#include <qpl/qpl.h>
+#include <chrono>
+#include <numeric>
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <chrono>
 
-#include "qpl/qpl.h"
 
-#include "examples_utils.hpp" // for argument parsing function
+// #include "examples_utils.hpp" // for argument parsing function
 
 /**
  * @brief This example requires a command line argument to set the execution path. Valid values are `software_path`
@@ -30,25 +38,32 @@
  */
 
 auto main(int argc, char** argv) -> int {
-    std::cout << "Intel(R) Query Processing Library version is " << qpl_get_library_version() << ".\n";
+    // std::cout << "Intel(R) Query Processing Library version is " << qpl_get_library_version() << ".\n";
 
     qpl_path_t execution_path = qpl_path_software;
 
     // Get path from input argument
-    const int extra_arg = 1;
-    const int parse_ret = parse_execution_path(argc, argv, &execution_path, extra_arg);
-    if (parse_ret) { return 1; }
+    // const int extra_arg = 1;
+    // const int parse_ret = parse_execution_path(argc, argv, &execution_path, extra_arg);
+    // if (parse_ret) { return 1; }
 
+    if (argc < 3) {
+        std::cerr << "Usage: " << argv[0] << " [execution_path] [dataset_path]\n";
+        return 1;
+    }
+    
     const std::string dataset_path = argv[2];
     // const std::string table_path = argv[3];
 
     // std::ifstream infile(table_path, std::ios::binary);
 
-    qpl_huffman_table_t huffman_table = nullptr;
+    qpl_huffman_table_t huffman_table = NULL;
     qpl_status status;
+    std::cout << "Creating Huffman table...\n";
 
-    status =   status = qpl_huffman_only_table_create(compression_table_type, execution_path, DEFAULT_ALLOCATOR_C,
+    status = qpl_huffman_only_table_create(compression_table_type, execution_path, DEFAULT_ALLOCATOR_C,
                                            &huffman_table);
+    std::cout << "Done creating Huffman table\n";
 
     for (const auto& path : std::filesystem::directory_iterator(dataset_path)) {
         std::ifstream file(path.path().string(), std::ifstream::binary);
@@ -148,37 +163,37 @@ auto main(int argc, char** argv) -> int {
         status = qpl_execute_job(job);
         if (status != QPL_STS_OK) {
             std::cout << "An error " << status << " acquired during decompression.\n";
-            qpl_huffman_table_destroy(huffman_table);
+            // qpl_huffman_table_destroy(huffman_table);
             return 1;
         }
 
         // Huffman table serlization 
         
-        uint32_t* serlialized_buff;
-        size_t serialized_size = 0U;
-        // serialization_options_t format = serialization_raw;  // or serialization_raw
+        // uint32_t* serlialized_buff;
+        // size_t serialized_size = 0U;
+        // // serialization_options_t format = serialization_raw;  // or serialization_raw
 
-        status = qpl_huffman_table_get_serialized_size(huffman_table, DEFAULT_SERIALIZATION_OPTIONS, &serialized_size);
-        if (status != QPL_STS_OK) {
-           std::cout << "An error " << status << " acquired during getting serialized size of Huffman table.\n";
-            qpl_huffman_table_destroy(huffman_table);
-            return 1;
-        }
-        const std::unique_ptr<uint8_t[]> unique_buffer = std::make_unique<uint8_t[]>(serialized_size);
-        uint8_t*                         buffer        = reinterpret_cast<uint8_t*>(unique_buffer.get());
+        // status = qpl_huffman_table_get_serialized_size(huffman_table, DEFAULT_SERIALIZATION_OPTIONS, &serialized_size);
+        // if (status != QPL_STS_OK) {
+        //    std::cout << "An error " << status << " acquired during getting serialized size of Huffman table.\n";
+        //     qpl_huffman_table_destroy(huffman_table);
+        //     return 1;
+        // }
+        // const std::unique_ptr<uint8_t[]> unique_buffer = std::make_unique<uint8_t[]>(serialized_size);
+        // uint8_t*                         buffer        = reinterpret_cast<uint8_t*>(unique_buffer.get());
 
 
-            // Serialization of a table
-        status = qpl_huffman_table_serialize(huffman_table, buffer, serialized_size, DEFAULT_SERIALIZATION_OPTIONS);
-        if (status != QPL_STS_OK) {
-            std::cout << "An error " << status << " acquired during serializing Huffman table.\n";
-            qpl_huffman_table_destroy(huffman_table);
-            return 1;
-        }
+        //     // Serialization of a table
+        // status = qpl_huffman_table_serialize(huffman_table, buffer, serialized_size, DEFAULT_SERIALIZATION_OPTIONS);
+        // if (status != QPL_STS_OK) {
+        //     std::cout << "An error " << status << " acquired during serializing Huffman table.\n";
+        //     qpl_huffman_table_destroy(huffman_table);
+        //     return 1;
+        // }
 
-        std::ofstream outfile("huffman_table_S.bin", std::ios::binary);
-        outfile.write(reinterpret_cast<const char*>(buffer), serialized_size);
-        outfile.close();
+        // std::ofstream outfile("huffman_table_S.bin", std::ios::binary);
+        // outfile.write(reinterpret_cast<const char*>(buffer), serialized_size);
+        // outfile.close();
         
 
 
