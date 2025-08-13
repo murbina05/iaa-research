@@ -47,7 +47,7 @@ auto main(int argc, char** argv) -> int {
     qpl_huffman_table_t huffman_table = nullptr;
     qpl_status status;
 
-    status =   status = qpl_huffman_only_table_create(compression_table_type, execution_path, DEFAULT_ALLOCATOR_C,
+    status = qpl_huffman_only_table_create(compression_table_type, execution_path, DEFAULT_ALLOCATOR_C,
                                            &huffman_table);
 
     for (const auto& path : std::filesystem::directory_iterator(dataset_path)) {
