@@ -14,8 +14,6 @@
 
 #include "qpl/qpl.h"
 
-#include "examples_utils.hpp" // for argument parsing function
-
 /**
  * @brief This example requires a command line argument to set the execution path. Valid values are `software_path`
  * and `hardware_path`. This example also requires a second command line argument which specifies the dataset path.
