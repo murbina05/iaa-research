@@ -35,9 +35,9 @@ auto main(int argc, char** argv) -> int {
     qpl_path_t execution_path = qpl_path_software;
 
     // Get path from input argument
-    const int extra_arg = 1;
-    const int parse_ret = parse_execution_path(argc, argv, &execution_path, extra_arg);
-    if (parse_ret) { return 1; }
+    // const int extra_arg = 1;
+    // const int parse_ret = parse_execution_path(argc, argv, &execution_path, extra_arg);
+    // if (parse_ret) { return 1; }
 
     const std::string dataset_path = argv[2];
     // const std::string table_path = argv[3];
